@@ -1,12 +1,12 @@
 import java.util.*;
 public class MathStuff {
     public static void main(String[] args) {
-        System.out.println(toInt("1125", 10));
+        System.out.println(toInt("11251234567", 10));
         long start = System.nanoTime();
-        System.out.println(toInt("1125", 8));
+        System.out.println(toInt("11251234567", 8));
         System.out.println("Using Math.pow: " + (System.nanoTime() - start));
         start = System.nanoTime();
-        System.out.println(toInt2("1125", 8));
+        System.out.println(toInt2("11251234567", 8));
         System.out.println("Using product *= base: " + (System.nanoTime() - start));
         System.out.println(toTen(10021, 3));
         System.out.println(fromTen(88, 3));
@@ -17,6 +17,31 @@ public class MathStuff {
         System.out.println(convertBases2("FFFA", 16, 2));
         System.out.println(convertBasesUnary(44, 5, 2));
         System.out.println(convertBasesUnary(555, 8, 4));
+        start = System.nanoTime();
+        System.out.println(Double.parseDouble("3.14195"));
+        System.out.println(System.nanoTime() - start);
+        start = System.nanoTime();
+        System.out.println(toDouble("3.14195"));
+        System.out.println(System.nanoTime() - start);
+        System.out.println(power(1.414, 2));
+    }
+
+    public static double toDouble(String s) {
+        int decimal = s.indexOf('.');
+        if(decimal == -1)
+          decimal = s.length();
+        double sum = 0.0;
+        double product = 1.0;
+        for(int i = decimal - 1; i >= 0; i--) {
+            sum += (s.charAt(i) - '0') * product;
+            product *= 10;
+        }
+        product = 1.0;
+        for(int i = decimal + 1; i < s.length(); i++) {
+            product *= .1;
+            sum += (s.charAt(i) - '0') * product;
+        }
+        return sum;
     }
 
     public static int toInt(String s) {
@@ -185,13 +210,14 @@ public class MathStuff {
     }
 
 
-    public static double power(Double number, int exp) {
-        double result = 1.;
-        while(++exp <= 0)
-            result /= number;
-        while(--exp > 0)
-            result *= number;
-        return result;
+    public static double power(double number, int exp) {
+        int temp = Math.abs(exp);
+        double product = 1;
+        while(temp-- >= 0)
+            product *= number;
+        if(exp < 0)
+            return 1/product;
+        return product;
     }
 
     public static double power2(double number, int exp) {
